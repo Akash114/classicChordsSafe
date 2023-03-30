@@ -1,6 +1,8 @@
 .exp {
   background: linear-gradient(130deg, #251b43 55%, #746cfe);
-  min-height: 250vh;
+  min-height: 100vh;
+  height: fit-content;
+  padding-bottom: 100px;
 
   .dg.ac {
     display: none;
@@ -13,9 +15,10 @@
   font-family: "FontsFree";
   padding-top: 100px;
   color: #ffffff;
+  word-spacing: 10px;
   padding-top: 100px;
-  text-shadow: 0 0 2px #ffff, 0 0 10px #a886fb, 0 0 2px #fff,
-    0 0 10px #a886fb, 0 0 2px #fff, 0 0 2px #fff, 0 0 2px #fff;
+  text-shadow: 0 0 2px #ffff, 0 0 10px #a886fb, 0 0 2px #fff, 0 0 10px #a886fb,
+    0 0 2px #fff, 0 0 2px #fff, 0 0 2px #fff;
 }
 
 .exp-main {
@@ -78,6 +81,8 @@
   font-size: 15px;
   font-family: "FontsFree";
   font-weight: 700;
+  word-spacing: 5px;
+  overflow-wrap: break-word;
 }
 
 .exp-album {
@@ -105,6 +110,7 @@
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 .exp-bg:hover {
@@ -116,8 +122,6 @@
   box-shadow: 0px 0px 20px #ffffff !important;
 }
 
-
-
 @keyframes scale-card {
   0% {
     transform: scale(1);
@@ -127,5 +131,119 @@
   100% {
     transform: scale(1.1);
     box-shadow: 0px 0px 20px #ffffff;
+  }
+}
+
+@media screen and (min-width: 2561px) {
+  .exp {
+    min-height: 100vh;
+    height: fit-content;
+    padding-bottom: 100px;
+  }
+
+  .exp-header {
+    font-size: 40px;
+    word-spacing: 5px;
+  }
+
+  .exp-bg {
+    height: 50vh;
+    width: 20vw;
+  }
+
+  .exp-img {
+    width: 20vw;
+    height: 20vh;
+  }
+
+  .exp-nft {
+    max-width: 20vw;
+    height: 18vh;
+  }
+
+  .exp-name {
+    font-size: 1.2vw;
+    word-spacing: 5px;
+  }
+
+  .exp-description {
+    font-size: 1.1vw;
+  }
+}
+
+@media screen and (min-width: 2000px) and (max-width: 2560px) {
+  .exp {
+    min-height: 100vh;
+    height: fit-content;
+    padding-bottom: 100px;
+  }
+
+  .exp-header {
+    font-size: 40px;
+    word-spacing: 5px;
+  }
+
+  .exp-bg {
+    height: 50vh;
+    width: 20vw;
+  }
+
+  .exp-img {
+    width: 20vw;
+    height: 20vh;
+  }
+
+  .exp-nft {
+    max-width: 20vw;
+    height: 18vh;
+  }
+
+  .exp-name {
+    font-size: 1.2vw;
+    word-spacing: 5px;
+  }
+
+  .exp-description {
+    font-size: 1.1vw;
+  }
+}
+
+@media screen and (min-width: 1600px) and (max-width: 1999px) {
+  .exp {
+    min-height: 100vh;
+    height: fit-content;
+    padding-bottom: 100px;
+  }
+}
+
+@media screen and (min-width: 1440px) and (max-width: 1599px) {
+  .exp {
+    min-height: 100vh;
+    height: fit-content;
+    padding-bottom: 100px;
+  }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1439px) {
+  .exp {
+    min-height: 100vh;
+    height: fit-content;
+    padding-bottom: 100px;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .exp {
+    min-height: 100vh;
+    height: fit-content;
+    padding-bottom: 100px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .exp {
+    min-height: 100vh;
+    height: fit-content;
+    padding-bottom: 100px;
   }
 }
