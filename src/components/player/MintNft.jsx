@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 import { NFTStorage, File } from "nft.storage";
 import { useAccount, useConnect } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+// import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 function MintNft(props) {
   // const classicChords_address = "0xA85cFB46795e47bB6D6C727964f668A0AE38935f";
@@ -20,7 +20,7 @@ function MintNft(props) {
     if (address) {
       mint();
     } else {
-      openConnectModal();
+      // openConnectModal();
     }
   };
   const { address, isConnected } = useAccount();
@@ -37,7 +37,7 @@ function MintNft(props) {
   const [onLoading, setOnLoading] = React.useState(false);
   const mintBox = React.useRef();
   const inputRef = React.useRef();
-  const { openConnectModal } = useConnectModal();
+  // const { openConnectModal } = useConnectModal();
 
   const addChain = () => {
     if (window.ethereum) {

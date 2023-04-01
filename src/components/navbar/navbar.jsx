@@ -5,24 +5,26 @@ import logo from "../../images/logo.png";
 import MenuIcon from "./MenuIcon";
 import "./navbar.scss";
 import { useNavigate } from "react-router-dom";
-import { ethers } from "ethers";
-import * as PushAPI from "@pushprotocol/restapi";
+import { ethers } from "ethers"; 
 // import { NotificationItem, chainNameType } from "@pushprotocol/uiweb";
 
-import { useAccount, useConnect, useDisconnect, useSigner } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import {gaslessOnboarding}  from "../onboard/onboard";
+
+
+// import { useAccount, useConnect, useDisconnect, useSigner } from "wagmi";
+// import { InjectedConnector } from "wagmi/connectors/injected";
+// import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const Navbar = () => {
   // const [error, setError] = useState();
   let navigate = useNavigate();
-  const { address, isConnected } = useAccount();
-  const signer = useSigner();
-  const { connect } = useConnect({
-    connector: new InjectedConnector(),
-  });
+  // const { address, isConnected } = useAccount();
+  // const signer = useSigner();
+  // const { connect } = useConnect({
+  //   connector: new InjectedConnector(),
+  // });
 
-  const { disconnect } = useDisconnect();
+  // const { disconnect } = useDisconnect();
   const walletOptions = useRef();
   const menuRef = useRef();
   const exploreMenuRef = useRef();
@@ -35,43 +37,74 @@ const Navbar = () => {
   const [showExploreMenu, setShowExploreMenu] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [chain, setChainStatus] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const [toggleNotification, setToggleNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState("");
 
-  const connectMeta = () => {
-    connect();
-    checkChain();
-    setAccount(address);
-    setShowOptions(false);
-  };
+  // const connectMeta = () => {
+  //   connect();
+  //   checkChain();
+  //   setAccount(address);
+  //   setShowOptions(false);
+  // };
 
-  const connectTron = async () => {
-    if (window.tronWeb) {
-      const address = await window.tronWeb.request({
-        method: "tron_requestAccounts",
-      });
-      console.log(address);
-      if (address.code === 200) {
-        console.log(window.tronWeb.defaultAddress.base58);
+  const [walletAddress, setWalletAddress] = useState("");
+    const [gaslessWallet, setGaslessWallet] = useState({});
+    const [web3AuthProvider, setWeb3AuthProvider] = useState(null);
+  
+    const login = async () => {
+      try {
+        await gaslessOnboarding.init();
+        const provider = await gaslessOnboarding.login();
+        console.log(provider);
+        if (provider) {
+          setWeb3AuthProvider(provider);
+        }
+  
+        const gaslessWallet = await gaslessOnboarding.getGaslessWallet();
+        if (!gaslessWallet.isInitiated()) await gaslessWallet.init();
+        const address = gaslessWallet.getAddress();
+        console.log(address)
+        setGaslessWallet(gaslessWallet);
+        setWalletAddress(address);
         setShowOptions(false);
         setConnection(true);
-        setAccount(window.tronWeb.defaultAddress.base58);
-      } else {
-        // alert("Something went wrong");
+      } catch (error) {
+        console.log(error);
       }
-    } else {
-      alert("please install a tronlink wallet to proceed.");
-    }
-  };
+    };
+  
+    const logout = async () => {
+      await gaslessOnboarding?.logout();
+  
+      setWeb3AuthProvider(null);
+      setGaslessWallet(undefined);
+      setWalletAddress(undefined);
+      console.log(gaslessOnboarding)
+    };
+  // const connectTron = async () => {
+  //   if (window.tronWeb) {
+  //     const address = await window.tronWeb.request({
+  //       method: "tron_requestAccounts",
+  //     });
+  //     console.log(address);
+  //     if (address.code === 200) {
+  //       console.log(window.tronWeb.defaultAddress.base58);
+  //       setShowOptions(false);
+  //       setConnection(true);
+  //       setAccount(window.tronWeb.defaultAddress.base58);
+  //     } else {
+  //       // alert("Something went wrong");
+  //     }
+  //   } else {
+  //     alert("please install a tronlink wallet to proceed.");
+  //   }
+  // };
 
-  const disconnectTron = () => {
-    disconnect();
-    if (window.tronWeb) {
-      // window.tronWeb.disconnect();
-      setConnection(false);
-    }
-  };
+  // const disconnectTron = () => {
+  //   disconnect();
+  //   if (window.tronWeb) {
+  //     // window.tronWeb.disconnect();
+  //     setConnection(false);
+  //   }
+  // };
 
   const addChain = () => {
     if (window.ethereum) {
@@ -115,128 +148,42 @@ const Navbar = () => {
     }
   };
 
-  useEffect(() => {
+  const checkConnection = async() => {
+    const gaslessWallet = await gaslessOnboarding.getGaslessWallet();
+    return !gaslessWallet.isInitiated()
+
+  }
+
+  useEffect( async () => {
     // console.log(isConnected);
-    if (isConnected) {
+    const connection = await checkConnection()
+    console.log(connection);
+    if (connection) {
       setConnection(true);
     } else {
       setConnection(false);
     }
-  }, [isConnected]);
+  }, [walletAddress]);
 
-  useEffect(() => {
-    if (isConnected) {
-      checkChain();
-      setConnection(true);
-      fetchNotification();
-      allNotification();
-    } else {
-      setConnection(false);
-    }
-    if (window.tronWeb) {
-      if (window.tronWeb.defaultAddress.base58) {
-        setConnection(true);
-        setAccount();
-      } else {
-        setConnection(false);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (isConnected) {
+  //     checkChain();
+  //     setConnection(true);
+  //     fetchNotification();
+  //     allNotification();
+  //   } else {
+  //     setConnection(false);
+  //   }
+  //   if (window.tronWeb) {
+  //     if (window.tronWeb.defaultAddress.base58) {
+  //       setConnection(true);
+  //       setAccount();
+  //     } else {
+  //       setConnection(false);
+  //     }
+  //   }
+  // }, []);
 
-  const allNotification = useCallback(() => {
-    for (let i = 0; i < notifications; i++) {
-      console.log(notifications[i]);
-      setToggleNotification(true);
-      setNotificationMessage(notifications[i].message);
-      setTimeout(() => {
-        setToggleNotification(false);
-      }, 3000);
-    }
-  }, [notifications]);
-
-  const optIn = async () => {
-    try {
-      const PK =
-        "aafda643b6b90977cde35f1cb28d880b5fdded8ae621490a0d3f56af41d59c65";
-      const Pkey = `0x${PK}`;
-      const signer = new ethers.Wallet(Pkey);
-
-      await PushAPI.channels.subscribe({
-        signer: signer,
-        channelAddress: "eip155:5:0x4466B37DF22A4fb3c8e79c0272652508C6Ba3c11", // channel address in CAIP
-        userAddress: `eip155:5:${address}`, // user address in CAIP
-        onSuccess: () => {
-          console.log("opt in success");
-        },
-        onError: (err) => {
-          // console.error(err);
-          console.error("opt in error", err);
-        },
-        env: "staging",
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  };
-  const optOut = async () => {
-    try {
-      const PK =
-        "aafda643b6b90977cde35f1cb28d880b5fdded8ae621490a0d3f56af41d59c65";
-      const Pkey = `0x${PK}`;
-      const signer = new ethers.Wallet(Pkey);
-      await PushAPI.channels.unsubscribe({
-        signer: signer,
-        channelAddress: "eip155:5:0x4466B37DF22A4fb3c8e79c0272652508C6Ba3c11", // channel address in CAIP
-        userAddress: `eip155:5:${address}`, // user address in CAIP
-        onSuccess: () => {
-          console.log("opt out success");
-        },
-        onError: () => {
-          console.error("opt out error");
-        },
-        env: "staging",
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const sendNotification = async () => {
-    try {
-      const apiResponse = await PushAPI.payloads.sendNotification({
-        signer: signer,
-        type: 3, // target
-        identityType: 2, // direct payload
-        notification: {
-          title: `hello EthIndia `,
-          body: `congratulation `,
-        },
-        payload: {
-          title: `hello ethIndia `,
-          body: `Congratulation`,
-          cta: "",
-          img: "",
-        },
-        recipients: `eip155:5:${address}`, // recipient address
-        channel: "eip155:5:0x737175340d1D1CaB2792bcf83Cff6bE7583694c7", // your channel address
-        env: "staging",
-      });
-
-      // apiResponse?.status === 204, if sent successfully!
-      console.log("API repsonse: ", apiResponse);
-    } catch (err) {
-      console.error("Error: ", err);
-    }
-  };
-
-  const fetchNotification = async () => {
-    const notification = await PushAPI.user.getFeeds({
-      user: `eip155:5:${address}`, // user address in CAIP
-      env: "staging",
-    });
-    console.log(notification);
-    setNotifications(notification);
-  };
 
   useEffect(() => {
     /**
@@ -295,18 +242,11 @@ const Navbar = () => {
     };
   }, [exploreMenuRef]);
 
-  useEffect(() => {
-    if (address) {
-      optIn();
-      fetchNotification();
-    }
-  }, [address]);
-
-  useEffect(() => {
-    if (notifications) {
-      allNotification();
-    }
-  }, [notifications]);
+  // useEffect(() => {
+  //   if (notifications) {
+  //     allNotification();
+  //   }
+  // }, [notifications]);
 
   // useEffect(() => {
   //   if (!window.tronWeb.defaultAddress) {
@@ -334,6 +274,7 @@ const Navbar = () => {
               <div className="navtextstyle">Home</div>
             </Link>
           </li>
+
           <li className="nav-item">
             <Link to="/player" className="nav-link">
               <div className="navtextstyle">Player</div>
@@ -385,7 +326,7 @@ const Navbar = () => {
               <div className="navtextstyle">Explore</div>
             </Link>
           </li> */}
-          {connected || isConnected ? (
+          {connected  ? (
             <>
               <li className="nav-item">
                 <span
@@ -433,18 +374,8 @@ const Navbar = () => {
                   <div className="navtextstyle">Profile</div>
                 </Link>
               </li>
-              <li className="nav-item-ctbtn">
-                {/* <button
-                  className="nav-disconnect"
-                  onClick={() => {
-                    disconnect();
-                    disconnectTron();
-                  }}
-                >
-                  disconnect
-                </button> */}
-                <ConnectButton />
-              </li>
+              
+              
               {/* {
                   chain
                     ?
@@ -464,15 +395,15 @@ const Navbar = () => {
             </>
           ) : (
             <li className="nav-item-btn">
-              {/* <button
+              <button
                 className="nav-button"
                 onClick={() => {
-                  setShowOptions(true);
+                  // setShowOptions(true);
+                  login();
                 }}
               >
                 Connect
-              </button> */}
-              <ConnectButton />
+              </button>
             </li>
           )}
         </ul>
@@ -496,6 +427,11 @@ const Navbar = () => {
                   Home
                 </span>
               </li>
+              <li className="nav-sub-menu-player">
+                <span>
+                </span>
+              </li>
+
               <li className="nav-sub-menu-player">
                 <span
                   onClick={() => {
@@ -545,7 +481,8 @@ const Navbar = () => {
                   </div>
                 ) : null}
               </li>
-              {connected || isConnected ? (
+
+              {connected  ? (
                 <>
                   <li>
                     <span
@@ -589,13 +526,30 @@ const Navbar = () => {
                       <div className="nav-sub-menu-profile">Profile</div>
                     </Link>
                   </li>
+                  <li className="nav-item-btn">
+              <button
+                className="nav-button"
+                onClick={() => {
+                  // setShowOptions(true);
+                  login();
+                }}
+              >
+                Connect
+              </button>
+            </li>
+
                   <li className="nav-item-ctbtn">
-                    <ConnectButton />
+                  <li className="nav-item">
+          </li>
                   </li>
                 </>
               ) : (
                 <li className="mobile-menu-btn">
-                  <ConnectButton />
+          <li className="nav-item">
+            <Link to="/" className="nav-link">
+              <div className="navtextstyle"><button onClick={() => login()}>Login</button></div>
+            </Link>
+          </li>
                 </li>
               )}
             </ul>
@@ -613,9 +567,9 @@ const Navbar = () => {
                 <span className="wallets">
                   <img
                     className="wallet-image"
-                    onClick={() => {
-                      connectMeta();
-                    }}
+                    // onClick={() => {
+                    //   connectMeta();
+                    // }}
                     src="images/mm.png"
                     alt="Connect to Metamask"
                   />
@@ -624,7 +578,7 @@ const Navbar = () => {
                   <img
                     className="wallet-image"
                     onClick={() => {
-                      connectTron();
+                      login();
                     }}
                     src="images/tl.svg"
                     alt="Connect to TronLink"
@@ -636,27 +590,6 @@ const Navbar = () => {
         </div>
       ) : null}
 
-      {toggleNotification ? (
-        <>
-          <div id="notifications">
-            <div className="notification-main" title="Manga Artist is live now">
-              <div className="message">{notificationMessage}</div>
-              <div>
-                <img
-                  className="close-btn"
-                  src="/images/cancel.svg"
-                  alt="close"
-                  onClick={() => {
-                    setToggleNotification(false);
-                  }}
-                  height="30px"
-                  width="30px"
-                />
-              </div>
-            </div>
-          </div>
-        </>
-      ) : null}
     </>
   );
 };

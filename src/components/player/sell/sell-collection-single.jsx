@@ -13,7 +13,7 @@ import market from "../../../contract/artifacts/market.json";
 import Loading3 from "../../../loading3";
 import { useAccount, useConnect } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+// import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 // const classicChords_address = "0x01daa94030dBd0a666066483D89E7927BE0904Ed";
 // const market_address = "0x086E4fDFb8CEb2c21bD1491a6B86Ce8eB4C01970"
@@ -23,7 +23,7 @@ function SellCollectionSingle() {
     if (address) {
       sell();
     } else {
-      openConnectModal();
+      // openConnectModal();
     }
   };
 
@@ -35,7 +35,7 @@ function SellCollectionSingle() {
 
   const { isConnected, address } = useAccount();
   const params = useParams();
-  const { openConnectModal } = useConnectModal();
+  // const { openConnectModal } = useConnectModal();
 
   // const collection = Collections[3];
   const [sellData, setSellData] = useState({

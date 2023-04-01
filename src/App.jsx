@@ -20,15 +20,15 @@ import AllStream from "./components/stream/all-stream";
 import SingleStream from "./components/stream/single-stream";
 import OldStream from "./components/stream/old-stream";
 import StreamEnded from "./components/stream/stream-ended";
-import {
-  getDefaultWallets,
-  RainbowKitProvider,
-  darkTheme,
-} from "@rainbow-me/rainbowkit";
+// import {
+//   getDefaultWallets,
+//   RainbowKitProvider,
+//   darkTheme,
+// } from "@rainbow-me/rainbowkit";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import { mainnet, polygon, polygonMumbai } from "wagmi/chains";
-import "@rainbow-me/rainbowkit/styles.css";
+// import "@rainbow-me/rainbowkit/styles.css";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
 const BTTChain = {
@@ -52,14 +52,14 @@ const BTTChain = {
   testnet: true,
 };
 
-const { provider, chains } = configureChains(
-  [polygonMumbai, BTTChain, mainnet, polygon],
-  [
-    jsonRpcProvider({
-      rpc: (chain) => ({ http: "https://pre-rpc.bittorrentchain.io/" }),
-    }),
-  ]
-);
+// const { provider, chains } = configureChains(
+//   [polygonMumbai, BTTChain, mainnet, polygon],
+//   [
+//     jsonRpcProvider({
+//       rpc: (chain) => ({ http: "https://pre-rpc.bittorrentchain.io/" }),
+//     }),
+//   ]
+// );
 
 // const { chains, provider } = configureChains(
 //   [mainnet, polygon, polygonMumbai, BTTChain],
@@ -74,23 +74,23 @@ const { provider, chains } = configureChains(
 //   // ]
 // );
 
-const { connectors } = getDefaultWallets({
-  appName: "My RainbowKit App",
-  chains,
-});
+// const { connectors } = getDefaultWallets({
+//   appName: "My RainbowKit App",
+//   chains,
+// });
 
-const client = createClient({
-  autoConnect: true,
-  connectors,
-  // provider: getDefaultProvider(),
-  provider,
-});
+// const client = createClient({
+//   autoConnect: true,
+//   connectors,
+//   // provider: getDefaultProvider(),
+//   provider,
+// });
 
 const App = () => {
   return (
     <div>
       <>
-        <WagmiConfig client={client}>
+        {/* <WagmiConfig client={client}>
           <RainbowKitProvider
             chains={chains}
             theme={darkTheme({
@@ -100,7 +100,7 @@ const App = () => {
               fontStack: "system",
               overlayBlur: "small",
             })}
-          >
+          > */}
             <Router>
               <NavBar />
               <div className="pages">
@@ -130,8 +130,8 @@ const App = () => {
                 </Routes>
               </div>
             </Router>
-          </RainbowKitProvider>
-        </WagmiConfig>
+          {/* </RainbowKitProvider>
+        </WagmiConfig> */}
       </>
       <Footer />
     </div>
